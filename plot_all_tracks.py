@@ -17,10 +17,25 @@ def load_track_data(filepath):
     """
     return pd.read_csv(filepath)
 
+def detect_csv_format(df):
+    """
+    Detect which CSV format is being used.
+    
+    Returns:
+        'column' if format is: timestamp,x,y,column,robot_x,robot_y,robot_yaw_rad
+        'xy_pairs' if format is: timestamp,robot_x,robot_y,robot_yaw_rad,x1,y1,x2,y2,...
+    """
+    if "x" in df.columns and "y" in df.columns and "column" in df.columns:
+        return 'column'
+    elif any(col.startswith('x') and col[1:].isdigit() for col in df.columns):
+        return 'xy_pairs'
+    else:
+        return 'unknown'
+
 def plot_single_track_detailed(ax, df, track_filename):
     """
     Plot a single track with both robot and participant(s) trajectories.
-    Handles two CSV formats:
+    Automatically handles two CSV formats:
     1. Column-based: timestamp, x, y, column, robot_x, robot_y, robot_yaw_rad
     2. Multi-participant: timestamp, robot_x, robot_y, robot_yaw_rad, x1, y1, x2, y2, ...
     
@@ -38,8 +53,11 @@ def plot_single_track_detailed(ax, df, track_filename):
     
     colors = ['red', 'green', 'orange', 'purple', 'brown']
     
-    # Format 1: Column-based (x, y, column columns)
-    if "x" in df.columns and "y" in df.columns and "column" in df.columns:
+    # Detect and handle the appropriate format
+    csv_format = detect_csv_format(df)
+    
+    if csv_format == 'column':
+        # Format 1: Column-based (x, y, column columns)
         participants = sorted(df["column"].unique())
         for idx, participant_id in enumerate(participants):
             participant_data = df[df["column"] == participant_id]
@@ -52,8 +70,8 @@ def plot_single_track_detailed(ax, df, track_filename):
             ax.scatter(part_x[0], part_y[0], color=color, s=100, marker='s', zorder=5)
             ax.scatter(part_x[-1], part_y[-1], color=color, s=100, marker='^', zorder=5)
     
-    # Format 2: Multi-participant columns (x1, y1, x2, y2, ...)
-    elif any(col.startswith('x') and col[1:].isdigit() for col in df.columns):
+    elif csv_format == 'xy_pairs':
+        # Format 2: Multi-participant columns (x1, y1, x2, y2, ...)
         # Extract participant columns
         participant_cols = {}
         for col in df.columns:

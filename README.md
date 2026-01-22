@@ -78,6 +78,8 @@ Mean total distance traveled across all tracks in a scenario. Indicates navigati
 ### 5. **PSC** - Personal Space Compliance (%)
 Percentage of timestamps where the robot maintains minimum safe distance (default 0.5m) from all humans. Higher values indicate better social awareness.
 
+**Distance Adjustment**: Measured distances are adjusted by subtracting 0.4m to account for the physical dimensions of the robot and humans (center-to-center → surface-to-surface approximation). This provides a more realistic measure of actual personal space violation, as it represents the combined radii of the robot (~0.1-0.2m) and human (~0.2m).
+
 ### 6. **DHmin** - Average Minimal Distance (m)
 Average of the closest approach distance achieved in each track. Directly measures human-robot proximity.
 

@@ -208,7 +208,6 @@ The analysis processes **545 hand-selected robot tracks** across all scenario co
 ## Notes
 
 - Timestamps are in Unix nanoseconds; division by 1e9 converts to seconds
-- PSC values >90% indicate strong social compliance; <50% indicates poor compliance
 - Path lengths are cumulative distances; shorter paths indicate more efficient navigation
 - All distances are in meters; all times are in seconds
 - The framework automatically detects CSV format, ensuring robustness across dataset variations
